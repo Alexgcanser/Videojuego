@@ -1,40 +1,40 @@
 class Enemies {
-  constructor(life, damage, move, row, col) {
-    this.life = life;
-    this.damage = damage;
-    this.move = move;
+  constructor(row, col) {
+    this.health = 3; // Todos los enemigos tendrán una salud inicial de 3
     this.row = row;
     this.col = col;
     this.cellSize = 50;
   }
 
-  getPixelPosition() {
-    let x = this.col * this.cellSize;
-    let y = this.row * this.cellSize + this.cellSize;
+  getPixelPosition(offsetX = 0, offsetY = 0) {
+    let x = this.col * this.cellSize + offsetX;
+    let y = this.row * this.cellSize + offsetY;
     return { x, y };
   }
 }
 
+// Las subclases ya no necesitan definir "life", "damage" o "move" por separado, 
+// ya que todos los enemigos ahora comparten la misma salud
 class Zombie extends Enemies {
   constructor(row, col) {
-    super(100, 10, "lento", row, col);
+    super(row, col);
   }
 }
 
 class Skeleton extends Enemies {
   constructor(row, col) {
-    super(80, 15, "medio", row, col);
+    super(row, col);
   }
 }
 
 class Creeper extends Enemies {
   constructor(row, col) {
-    super(60, 20, "explosivo", row, col);
+    super(row, col);
   }
 }
 
 class Enderman extends Enemies {
   constructor(row, col) {
-    super(120, 25, "teletransportación", row, col);
+    super(row, col);
   }
 }
