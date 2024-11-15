@@ -38,3 +38,14 @@ class Enderman extends Enemies {
     super(row, col);
   }
 }
+
+function moveEnemiesDown() {
+  for (let enemy of enemies) {
+      enemy.row++; // Mover al enemigo una fila hacia abajo
+      if (enemy.row >= rows) { // Si el enemigo alcanza la última fila
+          health -= 10; // Reducir la vida del jugador
+          enemy.row = 0; // Reiniciar al enemigo en la fila superior
+          enemy.col = Math.floor(Math.random() * cols); // Nueva columna aleatoria
+      }
+  }
+}

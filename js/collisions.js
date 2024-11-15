@@ -19,7 +19,7 @@ function handleArrowCollision(arrow) {
     }
 
     // Colisiones con enemigos
-    for (let i = enemies.length - 1; i >= 0; i--) { // Iterar al revés para eliminar enemigos de la lista
+    for (let i = enemies.length - 1; i >= 0; i--) {
         const enemy = enemies[i];
         const pos = enemy.getPixelPosition(offsetX, offsetY);
         const enemyLeft = pos.x;
@@ -28,36 +28,43 @@ function handleArrowCollision(arrow) {
         const enemyBottom = pos.y + cellSize;
 
         if (arrow.collidesWith(enemyLeft, enemyTop, cellSize)) {
-            // Determinar el borde de colisión dominante
             const distLeft = Math.abs(arrow.x - enemyLeft);
             const distRight = Math.abs(arrow.x - enemyRight);
             const distTop = Math.abs(arrow.y - enemyTop);
             const distBottom = Math.abs(arrow.y - enemyBottom);
 
             if (distLeft < distRight && distLeft < distTop && distLeft < distBottom) {
-                // Colisión con el lado izquierdo
                 arrow.angle = PI - arrow.angle;
                 arrow.x = enemyLeft - arrow.size;
             } else if (distRight < distLeft && distRight < distTop && distRight < distBottom) {
-                // Colisión con el lado derecho
                 arrow.angle = PI - arrow.angle;
                 arrow.x = enemyRight + arrow.size;
             } else if (distTop < distBottom) {
-                // Colisión con el lado superior
                 arrow.angle = -arrow.angle;
                 arrow.y = enemyTop - arrow.size;
             } else {
-                // Colisión con el lado inferior
                 arrow.angle = -arrow.angle;
                 arrow.y = enemyBottom + arrow.size;
             }
 
             // Reducir la salud del enemigo
             enemy.health -= 1;
-            
+
             // Eliminar al enemigo si su salud llega a 0
             if (enemy.health <= 0) {
-                enemies.splice(i, 1); // Eliminar el enemigo de la lista
+                enemies.splice(i, 1);
+                score += 100; // Añadir 100 puntos al puntaje
+                enemiesDefeated++;
+
+                // Gana una flecha por cada 40 enemigos derrotados
+                if (enemiesDefeated % 40 === 0) {
+                    arrows++;
+                }
+
+                // Si todos los enemigos han sido eliminados
+                if (enemies.length === 0) {
+                    resetForNextLevel(); // Resetea flechas y sube de nivel
+                }
             }
 
             break; // Salir del bucle después de una colisión

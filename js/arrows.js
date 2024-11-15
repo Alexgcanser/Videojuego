@@ -1,5 +1,5 @@
 class Arrow {
-  constructor(x, y, angle, speed = 5) {
+  constructor(x, y, angle, speed = 10) {
     this.x = x;
     this.y = y;
     this.angle = angle;
@@ -53,19 +53,60 @@ function startShooting(angle) {
       arrows--; // Actualizamos el conteo de flechas en el HUD
     } else {
       clearInterval(arrowInterval);
-      // Habilitar el disparo solo cuando todas las flechas regresen
-      checkAllArrowsReturned();
+      checkAllArrowsReturned(); // Verificar si todas las flechas han vuelto
     }
   }, 500);
 }
 
 // Verificar si todas las flechas han vuelto al carcaj
 function checkAllArrowsReturned() {
+  // Verificar si todas las flechas están inactivas (en el carcaj)
   if (arrowsArray.every(arrow => !arrow.active)) {
-    canShoot = true; // Habilitar el arco nuevamente cuando todas las flechas están de vuelta
+    canShoot = true; // Permitir disparar nuevamente
+    arrows += arrowsArray.length; // Devolver todas las flechas al carcaj
+    arrowsArray = []; // Limpiar el array de flechas activas
+
+    shotCount++; // Incrementar el contador de tiradas
+
+    // Mover enemigos cada vez que todas las flechas regresan
+    moveEnemiesDown();
   }
 }
+let shotCount = 0; // Contador de tiradas
 
+function startShooting(angle) {
+  if (!canShoot || arrows <= 0) return;
+  canShoot = false;
+  let arrowsRemaining = arrows;
+
+  arrowInterval = setInterval(() => {
+    if (arrowsRemaining > 0) {
+      let arrow = new Arrow(arco.x, arco.y, angle);
+      arrowsArray.push(arrow);
+      arrowsRemaining--;
+      arrows--; // Actualizamos el conteo de flechas en el HUD
+    } else {
+      clearInterval(arrowInterval);
+      checkAllArrowsReturned();
+
+      // Incrementar el contador de tiradas
+      shotCount++;
+
+      
+    }
+  }, 500);
+}
+
+function checkAllArrowsReturned() {
+  // Verificar si todas las flechas están inactivas (en el carcaj)
+  if (arrowsArray.every(arrow => !arrow.active)) {
+      canShoot = true; // Permitir disparar nuevamente
+      arrows += arrowsArray.length; // Devolver todas las flechas al carcaj
+      arrowsArray = []; // Limpiar el array de flechas activas
+
+      moveEnemiesDown(); // Mover enemigos una vez después de recargar
+  }
+}
 
 
 

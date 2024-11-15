@@ -3,27 +3,55 @@ let cellSize = 50;
 let cols, rows;
 let score = 0;
 let level = 1;
-let arrows = 5; // Número máximo de flechas
+let arrows = 5; // Número inicial de flechas
 let health = 100;
 let enemies = [];
 const totalEnemies = 50;
+let gameOver = false; // Estado del juego
+let enemiesDefeated = 0; // Contador de enemigos eliminados
+let resetButton;
+let resetClicked = false;
+
+
 
 function setup() {
-  createCanvas(1000, 650);
+  const container = document.getElementById("game-area");
+  const canvas = createCanvas(container.offsetWidth, container.offsetHeight);
+  canvas.parent("game-area");
   arco = new bow(color(255), 10);
   cols = Math.floor(width / cellSize) - 1;
   rows = Math.floor(height / cellSize) - 3;
   spawnEnemies(totalEnemies);
+
+
+  // Crear el botón pero ocultarlo inicialmente
+  resetButton = createButton('Reiniciar');
+  resetButton.position(width / 2 - 50, height / 2 + 50);
+  resetButton.mousePressed(() => {
+    resetClicked = true; // Marcar que se hizo clic en el botón
+    resetGame();
+  });
+  resetButton.hide(); // Ocultarlo hasta que sea necesario
 }
 
 function draw() {
+  if (gameOver) {
+    showGameOverScreen(); // Mostrar pantalla de Game Over
+    return;
+  }
+
   background(30);
   drawGrid();
-  arco.updateAngle();  // Actualiza el ángulo del arco aquí
+  arco.updateAngle();
   arco.display();
   drawEnemies();
   drawHUD();
   updateAndDisplayArrows();
+
+  if (health <= 0) {
+    gameOver = true;
+    resetButton.show(); // Mostrar el botón al perder
+  }
 }
 
 function drawGrid() {
@@ -83,22 +111,22 @@ function drawEnemies() {
   const offsetY = 20; // Margen superior de la cuadrícula
 
   for (let enemy of enemies) {
-      const pos = enemy.getPixelPosition(offsetX, offsetY);
+    const pos = enemy.getPixelPosition(offsetX, offsetY);
 
-      // Determinar el color del enemigo según su tipo (puedes ajustar estos colores)
-      if (enemy instanceof Zombie) fill(34, 139, 34); // Verde oscuro
-      else if (enemy instanceof Creeper) fill(144, 238, 144); // Verde claro
-      else if (enemy instanceof Skeleton) fill(211, 211, 211); // Gris claro
-      else if (enemy instanceof Enderman) fill(138, 43, 226); // Morado
+    // Determinar el color del enemigo según su tipo
+    if (enemy instanceof Zombie) fill(34, 139, 34); // Verde oscuro
+    else if (enemy instanceof Creeper) fill(144, 238, 144); // Verde claro
+    else if (enemy instanceof Skeleton) fill(211, 211, 211); // Gris claro
+    else if (enemy instanceof Enderman) fill(138, 43, 226); // Morado
 
-      // Dibujar el cuadrado del enemigo
-      rect(pos.x, pos.y, cellSize, cellSize);
+    // Dibujar el cuadrado del enemigo
+    rect(pos.x, pos.y, cellSize, cellSize);
 
-      // Dibujar el número de vida en el centro del enemigo
-      fill(255); // Color blanco para el texto de vida
-      textSize(16);
-      textAlign(CENTER, CENTER);
-      text(enemy.health, pos.x + cellSize / 2, pos.y + cellSize / 2); // Vida en el centro
+    // Dibujar el número de vida en el centro del enemigo
+    fill(255); // Color blanco para el texto de vida
+    textSize(16);
+    textAlign(CENTER, CENTER);
+    text(enemy.health, pos.x + cellSize / 2, pos.y + cellSize / 2); // Vida en el centro
   }
 }
 
@@ -114,10 +142,10 @@ function drawHUD() {
   text(`Nivel: ${level}`, 10, height - 10);
 
   textAlign(LEFT, CENTER);
-  text(`Flechas: ${arrows}`, arco.x + arco.width / 2 + 10, height - 40); // Mostramos el número de flechas restantes
+  text(`Flechas: ${arrows}`, arco.x + arco.width / 2 + 10, height - 40);
 
   textAlign(RIGHT, BOTTOM);
-  text(`Vida: ${health}%`, width - 10, height - 10);
+  text(`Vida: ${health}%`, width - 10, height - 10); // Actualiza la vida del jugador
 }
 
 function mousePressed() {
@@ -127,4 +155,61 @@ function mousePressed() {
   }
 }
 
+function showGameOverScreen() {
+  background(0);
+  fill(255, 0, 0);
+  textAlign(CENTER, CENTER);
+  textSize(48);
+  text("You Lose", width / 2, height / 2);
 
+  // El botón ya se muestra cuando `health <= 0`
+}
+
+
+function resetForNextLevel() {
+  level++; // Incrementar nivel
+  arrowsArray = []; // Limpiar todas las flechas activas en el campo
+  canShoot = true; // Permitir disparar de nuevo
+  
+  // Incrementar la vida de los enemigos
+  for (let enemy of enemies) {
+    enemy.health += 2; // Incrementar la salud de cada enemigo en 2 puntos
+  }
+
+  // Generar 50 nuevos enemigos
+  spawnEnemies(50);
+}
+
+function resetGame() {
+  // Reiniciar todas las variables del juego
+  gameOver = false;
+  score = 0;
+  level = 1;
+  arrows = 5;
+  health = 100;
+  enemies = [];
+  arrowsArray = [];
+  spawnEnemies(totalEnemies);
+
+  // Ocultar el botón de reinicio nuevamente
+  resetButton.hide();
+}
+
+function mousePressed() {
+  if (resetClicked) {
+    resetClicked = false; // Restablecer la bandera después de procesar el clic
+    return; // No disparar flechas si se hizo clic en el botón
+  }
+
+  if (canShoot) {
+    let angle = atan2(mouseY - arco.y, mouseX - arco.x); // Calcula el ángulo de disparo
+    startShooting(angle);
+  }
+}
+
+function windowResized() {
+  const container = document.getElementById("game-area");
+  resizeCanvas(container.offsetWidth, container.offsetHeight); // Ajusta el tamaño al contenedor
+  cols = Math.floor(width / cellSize) - 1;
+  rows = Math.floor(height / cellSize) - 3;
+}
