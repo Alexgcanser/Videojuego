@@ -13,8 +13,6 @@ class Enemies {
   }
 }
 
-// Las subclases ya no necesitan definir "life", "damage" o "move" por separado, 
-// ya que todos los enemigos ahora comparten la misma salud
 class Zombie extends Enemies {
   constructor(row, col) {
     super(row, col);
@@ -39,7 +37,7 @@ class Enderman extends Enemies {
   }
 }
 
-function moveEnemiesDown() {
+function moveEnemiesDown() { // Funcion para que los enemigos avancen hacia abajo y ademas hagan daño
   for (let enemy of enemies) {
       enemy.row++; // Mover al enemigo una fila hacia abajo
       if (enemy.row >= rows) { // Si el enemigo alcanza la última fila

@@ -12,7 +12,7 @@ class Arrow {
     this.x += this.speed * cos(this.angle);
     this.y += this.speed * sin(this.angle);
 
-    // Verificar si la flecha ha llegado a la parte inferior del canvas
+    // Verificar si la flecha llegó a la parte inferior del canvas
     if (this.y >= height) {
       this.active = false; // Desactivar la flecha
       arrows++; // Devolver la flecha al carcaj
@@ -39,18 +39,20 @@ class Arrow {
 let arrowsArray = [];
 let canShoot = true;
 let arrowInterval;
+let shotCount = 0; // Contador de tiradas
 
+// Función para disparar flechas
 function startShooting(angle) {
-  if (!canShoot || arrows <= 0) return;
+  if (!canShoot || arrows <= 0) return; // Verificar si se puede disparar
   canShoot = false;
   let arrowsRemaining = arrows;
 
   arrowInterval = setInterval(() => {
     if (arrowsRemaining > 0) {
-      let arrow = new Arrow(arco.x, arco.y, angle);
+      let arrow = new Arrow(arco.x, arco.y, angle); // Crear nueva flecha
       arrowsArray.push(arrow);
       arrowsRemaining--;
-      arrows--; // Actualizamos el conteo de flechas en el HUD
+      arrows--; // Actualizar el HUD
     } else {
       clearInterval(arrowInterval);
       checkAllArrowsReturned(); // Verificar si todas las flechas han vuelto
@@ -58,9 +60,8 @@ function startShooting(angle) {
   }, 500);
 }
 
-// Verificar si todas las flechas han vuelto al carcaj
+// Verificar si todas las flechas han regresado al carcaj
 function checkAllArrowsReturned() {
-  // Verificar si todas las flechas están inactivas (en el carcaj)
   if (arrowsArray.every(arrow => !arrow.active)) {
     canShoot = true; // Permitir disparar nuevamente
     arrows += arrowsArray.length; // Devolver todas las flechas al carcaj
@@ -68,45 +69,11 @@ function checkAllArrowsReturned() {
 
     shotCount++; // Incrementar el contador de tiradas
 
-    // Mover enemigos cada vez que todas las flechas regresan
+    // Mover enemigos cada vez que se recarga el carcaj
     moveEnemiesDown();
   }
 }
-let shotCount = 0; // Contador de tiradas
 
-function startShooting(angle) {
-  if (!canShoot || arrows <= 0) return;
-  canShoot = false;
-  let arrowsRemaining = arrows;
-
-  arrowInterval = setInterval(() => {
-    if (arrowsRemaining > 0) {
-      let arrow = new Arrow(arco.x, arco.y, angle);
-      arrowsArray.push(arrow);
-      arrowsRemaining--;
-      arrows--; // Actualizamos el conteo de flechas en el HUD
-    } else {
-      clearInterval(arrowInterval);
-      checkAllArrowsReturned();
-
-      // Incrementar el contador de tiradas
-      shotCount++;
-
-      
-    }
-  }, 500);
-}
-
-function checkAllArrowsReturned() {
-  // Verificar si todas las flechas están inactivas (en el carcaj)
-  if (arrowsArray.every(arrow => !arrow.active)) {
-      canShoot = true; // Permitir disparar nuevamente
-      arrows += arrowsArray.length; // Devolver todas las flechas al carcaj
-      arrowsArray = []; // Limpiar el array de flechas activas
-
-      moveEnemiesDown(); // Mover enemigos una vez después de recargar
-  }
-}
 
 
 

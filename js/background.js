@@ -7,14 +7,14 @@ let arrows = 5; // Número inicial de flechas
 let health = 100;
 let enemies = [];
 const totalEnemies = 50;
-let gameOver = false; // Estado del juego
+let gameOver = false; // Estado del juego (necesario para el gameover)
 let enemiesDefeated = 0; // Contador de enemigos eliminados
 let resetButton;
 let resetClicked = false;
 
 
 
-function setup() {
+function setup() { // Crear el area de juego
   const container = document.getElementById("game-area");
   const canvas = createCanvas(container.offsetWidth, container.offsetHeight);
   canvas.parent("game-area");
@@ -24,7 +24,7 @@ function setup() {
   spawnEnemies(totalEnemies);
 
 
-  // Crear el botón pero ocultarlo inicialmente
+  // Crear el botón de reiniciar pero ocultarlo inicialmente
   resetButton = createButton('Reiniciar');
   resetButton.position(width / 2 - 50, height / 2 + 50);
   resetButton.mousePressed(() => {
@@ -40,7 +40,7 @@ function draw() {
     return;
   }
 
-  background(30);
+  background(30);// todas nuestras funciones en el fondo
   drawGrid();
   arco.updateAngle();
   arco.display();
@@ -50,11 +50,11 @@ function draw() {
 
   if (health <= 0) {
     gameOver = true;
-    resetButton.show(); // Mostrar el botón al perder
+    resetButton.show(); // Mostrar el botón al morir
   }
 }
 
-function drawGrid() {
+function drawGrid() { // Dibujar la cuadricula
   let offsetX = 20;
   let offsetY = 20;
   stroke(250);
@@ -72,7 +72,7 @@ function drawGrid() {
   }
 }
 
-function spawnEnemies(numEnemies) {
+function spawnEnemies(numEnemies) { // La funcion de generar enemigos de manera aleatoria
   let validPositions = [];
   for (let row = 0; row < 7; row++) {
     for (let col = 1; col < cols; col++) {
@@ -106,14 +106,14 @@ function spawnEnemies(numEnemies) {
   }
 }
 
-function drawEnemies() {
+function drawEnemies() { // Funcion para "dinujar" a los enemigos
   const offsetX = 20; // Margen izquierdo de la cuadrícula
   const offsetY = 20; // Margen superior de la cuadrícula
 
   for (let enemy of enemies) {
     const pos = enemy.getPixelPosition(offsetX, offsetY);
 
-    // Determinar el color del enemigo según su tipo
+    // Determinar el color del enemigo según cual es
     if (enemy instanceof Zombie) fill(34, 139, 34); // Verde oscuro
     else if (enemy instanceof Creeper) fill(144, 238, 144); // Verde claro
     else if (enemy instanceof Skeleton) fill(211, 211, 211); // Gris claro
@@ -123,7 +123,7 @@ function drawEnemies() {
     rect(pos.x, pos.y, cellSize, cellSize);
 
     // Dibujar el número de vida en el centro del enemigo
-    fill(255); // Color blanco para el texto de vida
+    fill(255);
     textSize(16);
     textAlign(CENTER, CENTER);
     text(enemy.health, pos.x + cellSize / 2, pos.y + cellSize / 2); // Vida en el centro
@@ -131,7 +131,7 @@ function drawEnemies() {
 }
 
 
-function drawHUD() {
+function drawHUD() { // Funcion que dibuja el HUD
   fill(255);
   textSize(18);
   textFont("Arial");
@@ -155,18 +155,17 @@ function mousePressed() {
   }
 }
 
-function showGameOverScreen() {
+function showGameOverScreen() { // Funcion de fin de juego
   background(0);
   fill(255, 0, 0);
   textAlign(CENTER, CENTER);
   textSize(48);
   text("You Lose", width / 2, height / 2);
 
-  // El botón ya se muestra cuando `health <= 0`
 }
 
 
-function resetForNextLevel() {
+function resetForNextLevel() { // Funcion para pasar denivel
   level++; // Incrementar nivel
   arrowsArray = []; // Limpiar todas las flechas activas en el campo
   canShoot = true; // Permitir disparar de nuevo
@@ -195,9 +194,9 @@ function resetGame() {
   resetButton.hide();
 }
 
-function mousePressed() {
+function mousePressed() { // No disparar cuando ya has hecho click una vez
   if (resetClicked) {
-    resetClicked = false; // Restablecer la bandera después de procesar el clic
+    resetClicked = false;
     return; // No disparar flechas si se hizo clic en el botón
   }
 
@@ -209,7 +208,7 @@ function mousePressed() {
 
 function windowResized() {
   const container = document.getElementById("game-area");
-  resizeCanvas(container.offsetWidth, container.offsetHeight); // Ajusta el tamaño al contenedor
+  resizeCanvas(container.offsetWidth, container.offsetHeight); // Ajusta el tamaño al "contenedor"
   cols = Math.floor(width / cellSize) - 1;
   rows = Math.floor(height / cellSize) - 3;
 }

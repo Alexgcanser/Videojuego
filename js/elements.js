@@ -20,7 +20,7 @@ class bow {
     this.angle = constrain(angle, minAngle, maxAngle);
   }
 
-  drawAimingLine() {
+  drawAimingLine() { // Dibujar la linea de puntos de apuntar
     let lineLength = 300;
     let targetX = this.x + cos(this.angle) * lineLength;
     let targetY = this.y + sin(this.angle) * lineLength;
