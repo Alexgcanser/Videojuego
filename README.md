@@ -2,6 +2,7 @@ Complicaciones:
 Spawn de enemigos
 Colisiones
 Cargar imagenes
+Intentar tener en cada codigo por separado sus cosas pero a veces implicaba que no funcionase bien y tuviese que crear un codigo para todo en general
 ChatGpt
 
 
