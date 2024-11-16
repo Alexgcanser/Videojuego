@@ -27,3 +27,4 @@ Mejoras en las colisiones
 Ajustar el nº de flechas recibidas
 Distintos enemigos
 Distintos escenarios
+Poner un mensaje cuando se recibe un golpe
