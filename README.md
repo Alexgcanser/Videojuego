@@ -25,3 +25,5 @@ Posibles mejoras:
 Aumento de la dificultad mejor (que los enemigos se puedan mover mas filas o hagan mas daño)
 Mejoras en las colisiones
 Ajustar el nº de flechas recibidas
+Distintos enemigos
+Distintos escenarios
